@@ -13,7 +13,7 @@ export const product: Product = {
   name: 'Sofá Margot II - Rosé',
   value: 4000,
   image: {
-    filePath: '',
-    file3dPath: '',
+    filePath: '/assets/couch.png',
+    file3dPath: '/assets/couch.gif',
   }
 }
