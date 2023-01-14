@@ -1,27 +1,24 @@
 import { useMemo, useState } from "react";
 import { product } from "./data/product";
 
-const caches: HTMLImageElement[] = [];
-
 export function App() {
   const [is360, setIs360] = useState(false);
   const [imgActiveIndex, setImgActiveIndex] = useState(0);
 
-  const imageUrls = useMemo(() => {
-    const result: string[] = [];
+  const cachedImages = useMemo(() => {
+    const result: HTMLImageElement[] = [];
 
     for (let i = 0; i < product.image.amount; i++) {
       const imgUrl = product.image.url.replace("%d", `${i + 1}`);
       const cache = new Image();
       cache.src = imgUrl; // preload image
-      caches.push(cache);
-      result.push(imgUrl);
+      result.push(cache);
     }
 
     return result;
   }, []);
 
-  function handleToggleAnimation() {
+  function handleToggle360() {
     setIs360((state) => !state);
     setImgActiveIndex(0);
   }
@@ -52,15 +49,15 @@ export function App() {
         >
           <div
             className="
-            w-full h-full
-            flex justify-center items-center
-            relative
-          "
+              w-full h-full
+              flex justify-center items-center
+              relative
+            "
           >
             {is360 &&
-              imageUrls.map((_, index) => (
+              cachedImages.map((cache, index) => (
                 <span
-                  key={`span-${index}`}
+                  key={`${cache.src}`}
                   onMouseOver={() => setImgActiveIndex(index)}
                   className="h-full flex-1 block"
                 ></span>
@@ -71,7 +68,7 @@ export function App() {
                 pointer-events-none absolute
                 max-w-full max-h-full
               "
-              src={imageUrls[imgActiveIndex]}
+              src={cachedImages[imgActiveIndex].src}
               alt={product.name}
             />
           </div>
@@ -118,8 +115,8 @@ export function App() {
           <button
             type="button"
             className="flex justify-center items-center w-8 h-6 z-10"
-            onClick={handleToggleAnimation}
-            title="Toggle Animation"
+            onClick={handleToggle360}
+            title="Toggle 360 degrees product visualization"
           >
             <img src={is360 ? "/assets/x.svg" : "/assets/360.svg"} alt="" />
           </button>
