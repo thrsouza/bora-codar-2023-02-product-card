@@ -1,11 +1,29 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { product } from "./data/product";
 
+const caches: HTMLImageElement[] = [];
+
 export function App() {
-  const [isAnimated, setIsAnimated] = useState(false);
+  const [is360, setIs360] = useState(false);
+  const [imgActiveIndex, setImgActiveIndex] = useState(0);
+
+  const imageUrls = useMemo(() => {
+    const result: string[] = [];
+
+    for (let i = 0; i < product.image.amount; i++) {
+      const imgUrl = product.image.url.replace("%d", `${i + 1}`);
+      const cache = new Image();
+      cache.src = imgUrl; // preload image
+      caches.push(cache);
+      result.push(imgUrl);
+    }
+
+    return result;
+  }, []);
 
   function handleToggleAnimation() {
-    setIsAnimated((state) => !state);
+    setIs360((state) => !state);
+    setImgActiveIndex(0);
   }
 
   return (
@@ -32,13 +50,29 @@ export function App() {
             flex items-center w-full
           "
         >
-          <div>
+          <div
+            className="
+            w-full h-full
+            flex justify-center items-center
+            relative
+          "
+          >
+            {is360 &&
+              imageUrls.map((_, index) => (
+                <span
+                  key={`span-${index}`}
+                  onMouseOver={() => setImgActiveIndex(index)}
+                  className="h-full flex-1 block"
+                ></span>
+              ))}
+
             <img
-              src={
-                isAnimated ? product.image.file3dPath : product.image.filePath
-              }
+              className="
+                pointer-events-none absolute
+                max-w-full max-h-full
+              "
+              src={imageUrls[imgActiveIndex]}
               alt={product.name}
-              className="w-full pointer-events-none"
             />
           </div>
         </div>
@@ -48,6 +82,7 @@ export function App() {
             max-md:row-start-7 max-md:col-start-1 max-md:row-span-6 max-md:col-span-full
             flex flex-col justify-center items-start
             gap-5 w-full
+            anim
           "
         >
           <div className="flex flex-col gap-3 leading-none">
@@ -67,6 +102,7 @@ export function App() {
               border-[1px] border-solid border-port-gore-900
               text-xs font-normal py-2 px-4
               hover:bg-port-gore-900 hover:text-moon-raker-200
+              transition-colors ease-in delay-200
             "
           >
             Adicionar à cesta
@@ -81,14 +117,11 @@ export function App() {
         >
           <button
             type="button"
-            className="flex justify-center items-center w-8 h-6"
+            className="flex justify-center items-center w-8 h-6 z-10"
             onClick={handleToggleAnimation}
             title="Toggle Animation"
           >
-            <img
-              src={isAnimated ? "/assets/x.svg" : "/assets/360.svg"}
-              alt=""
-            />
+            <img src={is360 ? "/assets/x.svg" : "/assets/360.svg"} alt="" />
           </button>
         </div>
       </section>

@@ -4,11 +4,11 @@
 
 @layer base {
   html {
-    font-family: 'Lato', system-ui, sans-serif;
+    font-family: "Lato", system-ui, sans-serif;
     font-weight: 300;
   }
   h1 {
-    font-family: 'Crimson Pro', serif;
+    font-family: "Crimson Pro", serif;
     font-weight: 600;
   }
 }

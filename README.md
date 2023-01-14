@@ -6,6 +6,10 @@ Esta é a minha versão para o segundo desafio do [boracodar.dev](boracodar.dev)
 
 Este projeto foi iniciado com Vitejs, utilizando: React + Typescript. Além disso, decidi também por utilizar o Tailwind pra ganhar em produtividade (no meu ponto de vista) e acelerar o desenvolvimento do projeto.
 
+A parte mais desafiadora para mim (sem dúvida alguma) foi: **criar uma sensação de visualização 3D!**
+
+Foi muito divertido trabalhar essa sensação de rotação da imagem se baseando no movimento do mouse... Eu nem sei descrever o sentimento de ter conseguido tal feito sem utilizar uma biblioteca!
+
 Demo: [https://demo-product-card.thiagosouza.com](https://demo-product-card.thiagosouza.com)
 
 ## Contato
