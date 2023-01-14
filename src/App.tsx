@@ -2,8 +2,9 @@ import { useMemo, useState } from "react";
 import { product } from "./data/product";
 
 export function App() {
-  const [is360, setIs360] = useState(false);
-  const [imgActiveIndex, setImgActiveIndex] = useState(0);
+  const [is360, setIs360] = useState<boolean>(false);
+  const [imgActiveIndex, setImgActiveIndex] = useState<number>(0);
+  const [intervalId, setIntervalId] = useState<number | null>(null);
 
   const cachedImages = useMemo(() => {
     const result: HTMLImageElement[] = [];
@@ -18,9 +19,32 @@ export function App() {
     return result;
   }, []);
 
+  function removeInterval() {
+    if (intervalId) {
+      globalThis.clearInterval(intervalId);
+      setIntervalId(null);
+    }
+  }
+
+  function handleOnMouseOver(index: number) {
+    setImgActiveIndex(index);
+    removeInterval();
+  }
+
   function handleToggle360() {
-    setIs360((state) => !state);
+    if (!intervalId && !is360) {
+      const interval = globalThis.setInterval(() => {
+        setImgActiveIndex((state) => {
+          return state === 0 ? cachedImages.length - 1 : state - 1;
+        });
+      }, 64);
+      setIntervalId(interval);
+    } else {
+      removeInterval();
+    }
+
     setImgActiveIndex(0);
+    setIs360(!is360);
   }
 
   return (
@@ -35,7 +59,7 @@ export function App() {
           md:w-[54rem] md:h-[32rem]
           max-md:w-full max-md:m-10 max-md:p-10
           grid
-          md:grid-cols-6 md:grid-rows-6 m
+          md:grid-cols-6 md:grid-rows-6
           max-md:grid-cols-3 max-md:grid-rows-12
           overflow-hidden rounded-lg bg-moon-raker-200
         "
@@ -58,7 +82,7 @@ export function App() {
               cachedImages.map((cache, index) => (
                 <span
                   key={`${cache.src}`}
-                  onMouseOver={() => setImgActiveIndex(index)}
+                  onMouseOver={() => handleOnMouseOver(index)}
                   className="h-full flex-1 block"
                 ></span>
               ))}
